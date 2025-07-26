@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore'
 import { db } from '../firebase/firebase-config'
 import { useAuth } from '../context/AuthContext';
+import { format } from 'date-fns'
 
 function MessageList() {
     const [messages, setMessages] = useState([]);
@@ -36,7 +37,7 @@ function MessageList() {
                         className="w-full flex px-5"
                     >
                         <div className={`w-full flex ${isSender ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`flex items-start gap-2 max-w-[60%] ${isSender ? 'flex-row-reverse' : 'flex-row'}`}>
+                            <div className={`flex items-start gap-2 max-w-[60%] ${isSender ? 'flex-row-reverse' : 'flex-row '}`}>
                                 <img
                                     src='/avatar.png'
                                     alt={msg.name}
@@ -51,6 +52,9 @@ function MessageList() {
                                     <p className='text-sm font-semibold'>{msg.displayName}</p>
                                     <p className='text-base break-words'>{msg.text}</p>
                                 </div>
+                                <p className='text-xs text-gray-500 self-center'>
+                                    {msg.createdAt?.seconds && format(new Date(msg.createdAt.seconds * 1000), 'dd MMM, p')}
+                                </p>
                             </div>
                         </div>
                         <div ref={scrollRef}></div>

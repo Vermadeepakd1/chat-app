@@ -3,7 +3,7 @@ import { db } from '../firebase/firebase-config'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { useAuth } from '../context/AuthContext'
 
-function MessageInput({ onSend, isLoading }) {
+function MessageInput() {
     const [message, setMessage] = useState('');
     const { currentUser } = useAuth();
 
