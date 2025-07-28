@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext'
 function MessageInput() {
     const [message, setMessage] = useState('');
     const { currentUser } = useAuth();
+    const [typing, setTyping] = useState(false);
 
     const handleSendMessage = async (e) => {
         // console.log(currentUser)
@@ -33,6 +34,7 @@ function MessageInput() {
                 placeholder='Type your message...'
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
+
             />
             <button
                 type="submit"

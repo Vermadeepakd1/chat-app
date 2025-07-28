@@ -16,5 +16,5 @@
 
 .animate-background {
     background-size: 200% 200%;
-    animation: gradientMove 15s ease infinite;
+    animation: gradientMove 5s ease infinite;
 }

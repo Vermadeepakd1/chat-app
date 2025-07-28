@@ -1,8 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { collection, query, orderBy, onSnapshot } from 'firebase/firestore'
+import { collection, query, orderBy, onSnapshot, doc } from 'firebase/firestore'
 import { db } from '../firebase/firebase-config'
 import { useAuth } from '../context/AuthContext';
 import { format } from 'date-fns'
+
+function TypingIndicator({ chatId }) {
+    const { currentUser } = useAuth();
+    const [isTyping, setIsTyping] = useState(false);
+
+    useEffect(() => {
+        const unsubscribe = onSnapshot(doc(db, "chats", chatId), (docSnap) => {
+            if (docSnap.exists()) {
+                const typing = docSnap.data().typing || {};
+
+                const othersTyping = Object.entries(typing).find(
+                    ([uid, status]) => uid !== currentUser.uid && status === true
+                );
+                setIsTyping(!!othersTyping);
+            }
+        });
+        return () => unsubscribe();
+    }, [chatId, currentUser.uid]);
+
+    return (
+        isTyping && <p className='text-sm italic text-gray-500 px-4'>Typing...</p>
+    );
+}
 
 function MessageList() {
     const [messages, setMessages] = useState([]);
@@ -61,6 +84,7 @@ function MessageList() {
                     </div>
                 )
             })}
+            <TypingIndicator chatId={currentUser.uid} />
         </div>
     )
 }
