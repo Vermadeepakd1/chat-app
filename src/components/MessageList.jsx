@@ -3,27 +3,33 @@ import { collection, query, orderBy, onSnapshot, doc } from 'firebase/firestore'
 import { db } from '../firebase/firebase-config'
 import { useAuth } from '../context/AuthContext';
 import { format } from 'date-fns'
+import { GLOBAL_CHAT_ID } from '../constants/chatConstants';
 
-function TypingIndicator({ chatId }) {
+function TypingIndicator() {
     const { currentUser } = useAuth();
     const [isTyping, setIsTyping] = useState(false);
+    const [typingUsers, setTypingUsers] = useState([]);
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(doc(db, "chats", chatId), (docSnap) => {
+        const unsubscribe = onSnapshot(doc(db, "chats", GLOBAL_CHAT_ID), (docSnap) => {
             if (docSnap.exists()) {
                 const typing = docSnap.data().typing || {};
+                // Find all typing users except current user
+                const typingUsersList = Object.entries(typing)
+                    .filter(([uid, status]) => uid !== currentUser.uid && status === true)
+                    .map(([uid, _]) => uid);
 
-                const othersTyping = Object.entries(typing).find(
-                    ([uid, status]) => uid !== currentUser.uid && status === true
-                );
-                setIsTyping(!!othersTyping);
+                setTypingUsers(typingUsersList);
+                setIsTyping(typingUsersList.length > 0);
             }
         });
         return () => unsubscribe();
-    }, [chatId, currentUser.uid]);
+    }, [currentUser.uid]);
 
     return (
-        isTyping && <p className='text-sm italic text-gray-500 px-4'>Typing...</p>
+        isTyping && <p className='text-sm italic text-gray-500 px-4'>
+            {typingUsers.length > 1 ? 'Several people are typing...' : 'Someone is typing...'}
+        </p>
     );
 }
 
@@ -84,7 +90,7 @@ function MessageList() {
                     </div>
                 )
             })}
-            <TypingIndicator chatId={currentUser.uid} />
+            <TypingIndicator />
         </div>
     )
 }
