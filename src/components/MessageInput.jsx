@@ -28,7 +28,7 @@ function MessageInput() {
     }
 
     return (
-        <form onSubmit={handleSendMessage} className='flex items-center gap-2 px-4 py-2 border-t bg-white'>
+        <form onSubmit={handleSendMessage} className='flex items-center gap-2 px-4 py-2 border-t bg-white mb-3'>
             <input type="text"
                 className='grow border rounded px-4 py-2 focus:outline-none'
                 placeholder='Type your message...'

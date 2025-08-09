@@ -57,33 +57,35 @@ function MessageList() {
     }
 
     return (
-        <div className='p-4 flex flex-col gap-3 overflow-y-auto h-[calc(100vh-120px)] w-full'>
+        <div className='p-4 flex flex-col gap-4 overflow-y-auto h-[80vh] w-full'>
             {messages.map(msg => {
                 const isSender = msg.uid === currentUser?.uid;
                 return (
                     <div
                         key={msg.id}
-                        className="w-full flex px-5"
+                        className="w-full flex px-4 animate-fade-in"
                     >
                         <div className={`w-full flex ${isSender ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`flex items-start gap-2 max-w-[60%] ${isSender ? 'flex-row-reverse' : 'flex-row '}`}>
+                            <div className={`flex items-start gap-3 max-w-[70%] ${isSender ? 'flex-row-reverse' : 'flex-row'}`}>
                                 <img
-                                    src='/avatar.png'
-                                    alt={msg.name}
-                                    className='w-8 h-8 rounded-full object-cover flex-shrink-0'
+                                    src={msg.photoURL || '/avatar.png'}
+                                    alt={msg.displayName}
+                                    className='w-8 h-8 rounded-full object-cover flex-shrink-0 border-2 border-white/20'
                                 />
-                                <div
-                                    className={`p-3 rounded-lg ${isSender
-                                        ? 'bg-blue-500 text-white rounded-tr-none'
-                                        : 'bg-gray-200 text-black rounded-tl-none'
-                                        }`}
-                                >
-                                    <p className='text-sm font-semibold'>{msg.displayName}</p>
-                                    <p className='text-base break-words'>{msg.text}</p>
+                                <div className="flex flex-col gap-1">
+                                    <div
+                                        className={`p-3 rounded-2xl ${isSender
+                                            ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-tr-none'
+                                            : 'bg-gradient-to-r from-gray-200 to-gray-300 text-gray-900 rounded-tl-none'
+                                            } shadow-lg`}
+                                    >
+                                        <p className='text-sm font-medium opacity-90 mb-1'>{msg.displayName}</p>
+                                        <p className='text-base break-words'>{msg.text}</p>
+                                    </div>
+                                    <p className={`text-xs text-neutral-700/60 ${isSender ? 'text-right' : 'text-left'} px-2`}>
+                                        {msg.createdAt?.seconds && format(new Date(msg.createdAt.seconds * 1000), 'dd MMM, p')}
+                                    </p>
                                 </div>
-                                <p className='text-xs text-gray-500 self-center'>
-                                    {msg.createdAt?.seconds && format(new Date(msg.createdAt.seconds * 1000), 'dd MMM, p')}
-                                </p>
                             </div>
                         </div>
                         <div ref={scrollRef}></div>
